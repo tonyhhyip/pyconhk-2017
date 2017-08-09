@@ -25,9 +25,6 @@ app.use('/2017/data', serveStatic('assets/data'));
 app.use('/2017', serveStatic('public'));
 app.use(devMiddleware);
 app.use(hotMiddleware);
-app.get('/2017/:page', (req, res) => {
-  res.render(req.params.page.replace(/html$/, 'jinja'));
-});
 
 app.listen(development.port, () => {
   console.log('Ready to start server');

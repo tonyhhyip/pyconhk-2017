@@ -75,6 +75,7 @@
     "moment": "^2.18.1",
     "moment-timezone": "^0.5.13",
     "node-waves": "^0.7.5",
+    "prop-types": "^15.5.10",
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-redux": "^5.0.3",

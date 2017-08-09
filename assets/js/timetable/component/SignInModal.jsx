@@ -1,26 +1,26 @@
-// @flow
-
 import React from 'react';
+import PropTypes from 'prop-types';
 import $ from 'jquery';
 import classNames from 'classnames';
-import type { User } from '../../reducers/user';
-import {
-  signOut,
-} from '../../auth';
-
-type Props = {
-  user: ?User,
-  position: 'navbar' | 'sidebar',
-}
+import { signOut } from '../../auth';
 
 export default class SigninModal extends React.Component {
+  static propTypes = {
+    user: PropTypes.shape({
+      displayName: PropTypes.string.isRequired,
+    }),
+  };
+
+  static defaultProps = {
+    user: null,
+  };
+
   componentDidMount() {
     $('#signin-modal').modal();
   }
 
-  props: Props;
-
-  handleButtonClick(auth: boolean) {
+  // eslint-disable-next-line class-methods-use-this
+  handleButtonClick(auth) {
     return auth ? signOut : () => { $('#signin-modal').modal('open'); };
   }
 
@@ -28,8 +28,7 @@ export default class SigninModal extends React.Component {
     const auth = this.props.user !== null;
     const button = `Sign ${auth ? 'Out' : 'In'}`;
     const className = classNames('waves-effect', 'waves-teal');
-    return (
-      <a data-role="auth" className={className} onClick={this.handleButtonClick(auth)}>{button}</a>
-    );
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+    return (<a data-role="auth" className={className} onClick={() => this.handleButtonClick(auth)}>{button}</a>);
   }
 }

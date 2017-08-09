@@ -3,30 +3,15 @@
 /* eslint
 react/jsx-no-target-blank: warn,
 class-methods-use-this: warn,
+react/no-danger: warn,
 */
 
 import React from 'react';
 import $ from 'jquery';
 import moment from 'moment-timezone';
+import PropTypes from 'prop-types';
 
-/* globals HTMLElement */
-
-type Props = {
-  children: React.Component<*>,
-  topics: Array<Object>,
-  langs: Object,
-  timeslots: Object,
-  venues: Object,
-  speakers: Array<Object>,
-  sponsors: Object,
-  user: Object | null,
-  agenda: {[key: string]: string},
-  sessions: Object | null,
-  addTopic(topic: string): void,
-  removeTopic(topic: string): void,
-};
-
-function capitalize(string: string) {
+function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -47,7 +32,28 @@ export default class ModalProvider extends React.Component {
     closeModal: React.PropTypes.func,
   };
 
-  constructor(props: Props) {
+  /* eslint-disable react/forbid-prop-types */
+  static propTypes = {
+    children: PropTypes.any.isRequired,
+    topics: PropTypes.arrayOf(PropTypes.object).isRequired,
+    langs: PropTypes.object.isRequired,
+    timeslots: PropTypes.object.isRequired,
+    venues: PropTypes.object.isRequired,
+    speakers: PropTypes.arrayOf(PropTypes.object).isRequired,
+    sponsors: PropTypes.object.isRequired,
+    user: PropTypes.object,
+    agenda: PropTypes.object.isRequired,
+    sessions: PropTypes.object,
+    addTopic: PropTypes.func.isRequired,
+    removeTopic: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    user: null,
+    sessions: null,
+  };
+
+  constructor(props) {
     super(props);
     this.state = {
       topic: null,
@@ -58,17 +64,9 @@ export default class ModalProvider extends React.Component {
     this.saved = props.agenda ? Object.values(props.agenda) : [];
   }
 
-  state: {
-    topic: string | null,
-    session: string | null,
-    community: string | null,
-    type: 'topic' | 'session' | 'community',
-  };
-
-
   getChildContext() {
     return {
-      openModal: (type: 'topic' | 'session' | 'community', id: string) => {
+      openModal: (type, id) => {
         this.setState({ type, [type]: id });
         $(this.modal).modal('open');
       },
@@ -82,13 +80,9 @@ export default class ModalProvider extends React.Component {
     $(this.modal).modal();
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     this.saved = nextProps.agenda ? Object.values(nextProps.agenda) : [];
   }
-
-  saved: Array<any>;
-  props: Props;
-  modal: HTMLElement;
 
   handleClick() {
     if (!this.props.user) {
@@ -105,7 +99,7 @@ export default class ModalProvider extends React.Component {
     }
   }
 
-  renderSpeakers(topic: Object) {
+  renderSpeakers(topic) {
     const speakers = topic.speaker.map(id => this.props.speakers[id]);
     const title = (speakers.length > 1) ? 'Speakers' : 'Speaker';
     return (
@@ -129,8 +123,10 @@ export default class ModalProvider extends React.Component {
                   {hasSocial && 'github' in speaker.social && (
                     <a
                       href={`https://github.com/${speaker.social.github}`}
-                      title="Github" alt="Github"
-                      rel="noopener noreferrer" target="_blank"
+                      title="Github"
+                      alt="Github"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <i className="fa fa-github globe" />
                     </a>
@@ -138,8 +134,10 @@ export default class ModalProvider extends React.Component {
                   {hasSocial && 'project_github' in speaker.social && (
                     <a
                       href={speaker.social.project_github}
-                      title="Github of the Project" alt="Github of the Project"
-                      rel="noopener noreferrer" target="_blank"
+                      title="Github of the Project"
+                      alt="Github of the Project"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <i className="fa fa-github globe" />
                     </a>
@@ -147,8 +145,10 @@ export default class ModalProvider extends React.Component {
                   {hasSocial && 'twitter' in speaker.social && (
                     <a
                       href={speaker.social.twitter}
-                      title="Twitter" alt="Twitter"
-                      rel="noopener noreferrer" target="_blank"
+                      title="Twitter"
+                      alt="Twitter"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <i className="fa fa-twitter" />
                     </a>
@@ -156,8 +156,10 @@ export default class ModalProvider extends React.Component {
                   {hasSocial && 'blog' in speaker.social && (
                     <a
                       href={speaker.social.blog}
-                      title="Blog" alt="Blog"
-                      rel="noopener noreferrer" target="_blank"
+                      title="Blog"
+                      alt="Blog"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <i className="fa fa-globe" />
                     </a>
@@ -165,8 +167,10 @@ export default class ModalProvider extends React.Component {
                   {hasSocial && 'facebook' in speaker.social && (
                     <a
                       href={speaker.social.facebook}
-                      title="Facebook" alt="Facebook"
-                      rel="noopener noreferrer" target="_blank"
+                      title="Facebook"
+                      alt="Facebook"
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <i className="fa fa-facebook" />
                     </a>
@@ -183,7 +187,7 @@ export default class ModalProvider extends React.Component {
     );
   }
 
-  renderLang(topic: Object) {
+  renderLang(topic) {
     // language
     const lang = this.props.langs[topic.lang] || { name: '' };
     const langSlide = this.props.langs[topic.lang_slide] || null;
@@ -197,7 +201,7 @@ export default class ModalProvider extends React.Component {
     ) : null;
   }
 
-  renderLevel(topic: Object) {
+  renderLevel(topic) {
     // level
     let level = (<span><i className="fa fa-users" aria-hidden="true" /> For General Public</span>);
     if (topic.level === 'Intermediate') level = (<span><i className="fa fa-graduation-cap" aria-hidden="true" /> For Coders and Tech Audiences with General Knowledge and Skills.</span>);
@@ -209,7 +213,7 @@ export default class ModalProvider extends React.Component {
     );
   }
 
-  renderTime(topic: Object) {
+  renderTime(topic) {
     const { timeslots } = this.props;
     const topicTime = topic.startTime.split('.');
     const day = topicTime[0];
@@ -224,7 +228,7 @@ export default class ModalProvider extends React.Component {
     );
   }
 
-  renderVenue(topic: Object) {
+  renderVenue(topic) {
     return (topic.venue) ? (
       <div className="location">
         <i className="fa fa-map-signs" aria-hidden="true" />
@@ -233,13 +237,13 @@ export default class ModalProvider extends React.Component {
     ) : null;
   }
 
-  renderReq(topic: Object) {
+  renderReq(topic) {
     return (topic.requirement) ?
       (<div className="requirement"><i className="fa fa-star" aria-hidden="true" /> Required: {topic.requirement}</div>) :
       null;
   }
 
-  renderSponsor(topic: Object) {
+  renderSponsor(topic) {
     if (!topic.sponsor) return null;
     const { sponsors } = this.props;
     const sponsor = sponsors.sponsor_types.reduce(
@@ -267,8 +271,11 @@ export default class ModalProvider extends React.Component {
             {sponsor.description.map(paragraph => (<p dangerouslySetInnerHTML={{ __html: paragraph }} />))}
             <div>
               <a
-                className="waves-effect waves-light btn" rel="noopener noreferrer" target="_blank"
-                href={sponsor.links.url} role="button"
+                className="waves-effect waves-light btn"
+                rel="noopener noreferrer"
+                target="_blank"
+                href={sponsor.links.url}
+                role="button"
               >
                 {sponsor.links.text}
               </a>

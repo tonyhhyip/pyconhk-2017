@@ -16,6 +16,10 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
   },
+  externals: {
+    jquery: 'jQuery',
+    hammerjs: 'Hammer',
+  },
   module: {
     rules: [
       {

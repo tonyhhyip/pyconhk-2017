@@ -1,5 +1,3 @@
-// @flow
-
 import $ from 'jquery';
 
 /* global location, navigator */
@@ -9,8 +7,7 @@ if (location.hostname !== 'localhost' && location.protocol !== 'https:') {
   location.href = `https:${location.href.substring(location.protocol.length)}`;
 }
 
-if (navigator.serviceWorker) {
-  // $FlowFixMe
+if (navigator.serviceWorker && process.env.NODE_ENV === 'production') {
   require.ensure(['./sw'], () => {
     require('./sw');
   });
@@ -25,7 +22,4 @@ $('[data-activates]').sideNav();
 $('.collapsible').collapsible();
 
 // $FlowFixMe
-require.ensure(['node-waves'], () => {
-  const Waves = require('node-waves');
-  Waves.init();
-});
+import('node-waves').then(Waves => Waves.init());
