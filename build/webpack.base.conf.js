@@ -25,10 +25,12 @@ module.exports = {
         options: {
           formatter: require('eslint-friendly-formatter'),
         },
+        exclude: /node_modules/,
       },
       {
         test: /\.jsx?$/,
         use: ['babel-loader'],
+        exclude: /node_modules/,
       },
     ],
   },
