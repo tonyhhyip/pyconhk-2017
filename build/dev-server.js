@@ -7,8 +7,8 @@ const webpackHotMiddleware = require('webpack-hot-middleware');
 const { development } = require('./config');
 const devConfig = require('./webpack.dev.conf');
 
-const app = express();
 
+const app = express();
 const compiler = webpack(devConfig);
 
 const devMiddleware = webpackDevMiddleware(compiler, {
@@ -22,8 +22,12 @@ const hotMiddleware = webpackHotMiddleware(compiler, {
 
 app.use(morgan('dev'));
 app.use('/2017/data', serveStatic('assets/data'));
+app.use('/2017', serveStatic('public'));
 app.use(devMiddleware);
 app.use(hotMiddleware);
+app.get('/2017/:page', (req, res) => {
+  res.render(req.params.page.replace(/html$/, 'jinja'));
+});
 
 app.listen(development.port, () => {
   console.log('Ready to start server');
