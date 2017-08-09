@@ -3,9 +3,6 @@
   "extends": [
     "airbnb"
   ],
-  "plugins": [
-    "flowtype"
-  ],
   "rules": {
     "comma-dangle": ["error", {
       "functions": "ignore",
